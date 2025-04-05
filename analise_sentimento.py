@@ -14,54 +14,51 @@ except ImportError:
 # Inicializa o analisador de sentimentos
 analyzer = SentimentIntensityAnalyzer()
 
-# Lista de frases de exemplo em português para analisar
-frases_para_analisar = [
-    "Que dia maravilhoso para passear no parque!",
-    "Estou muito decepcionado com o serviço prestado.",
-    "O filme foi bom, mas o final poderia ser melhor.",
-    "Não gostei nem um pouco daquela comida.",
-    "A entrega chegou no prazo.",
-    "Que notícia fantástica!",
-    "O tempo está nublado hoje.",
-    "Adorei a nova funcionalidade do aplicativo!",
-    "Infelizmente, o produto veio com defeito.",
-    "O atendimento foi ok.",
-    "Este livro é simplesmente perfeito.",
-    "Que experiência horrível, nunca mais volto!",
-    "A comida estava mais ou menos."
-]
-
 # Função auxiliar para interpretar o score composto
 def interpretar_sentimento(compound_score):
     """Interpreta o score composto do LeIA."""
     if compound_score >= 0.05:
-        return "Positivo"
+        return "Positivo 😊"
     elif compound_score <= -0.05:
-        return "Negativo"
+        return "Negativo 😠"
     else:
-        return "Neutro"
+        return "Neutro 😐"
 
-# --- Início da Análise ---
+# --- Início da Análise Interativa ---
 print("=============================================")
-print("   Análise de Sentimentos com LeIA v1.1     ")
+print("   Analisador de Sentimentos Interativo    ")
+print("         (Digite 'sair' para terminar)     ")
 print("=============================================")
 
-# Itera sobre cada frase, analisa e imprime o resultado
-for i, frase in enumerate(frases_para_analisar):
-    print(f"\n--- Frase {i+1} ---")
-    print(f"Texto: '{frase}'")
+while True:
+    # Pede ao usuário para digitar uma frase
+    try:
+        frase_usuario = input("\nDigite uma frase para analisar (ou 'sair'): ")
+    except EOFError: # Caso o input seja interrompido (raro em uso normal)
+        print("\nEntrada interrompida. Saindo.")
+        break
+
+    # Verifica se o usuário quer sair
+    if frase_usuario.lower() == 'sair':
+        print("\nObrigado por usar o analisador. Até logo!")
+        break
+
+    # Verifica se a frase não está vazia
+    if not frase_usuario.strip():
+        print("Você não digitou nada. Tente novamente.")
+        continue
+
+    print(f"Analisando: '{frase_usuario}'")
 
     # Calcula os scores de polaridade
-    scores = analyzer.polarity_scores(frase)
+    scores = analyzer.polarity_scores(frase_usuario)
 
     # Interpreta o sentimento geral
     sentimento = interpretar_sentimento(scores['compound'])
 
     # Imprime os resultados formatados
-    print(f"  Sentimento: {sentimento}")
-    print(f"  Score Composto: {scores['compound']:.4f} (varia de -1 a +1)")
-    # print(f"  Scores Detalhados (Negativo, Neutro, Positivo): ({scores['neg']:.3f}, {scores['neu']:.3f}, {scores['pos']:.3f})") # Descomente se quiser ver os scores individuais
+    print(f"  -> Sentimento: {sentimento}")
+    print(f"  -> Score Composto: {scores['compound']:.4f}")
+    # print(f"  Scores Detalhados (Neg, Neu, Pos): ({scores['neg']:.3f}, {scores['neu']:.3f}, {scores['pos']:.3f})") # Descomente para detalhes
 
 print("\n=============================================")
-print("           Análise Concluída               ")
-print("=============================================")
